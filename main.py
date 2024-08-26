@@ -1,5 +1,5 @@
 import os as shell
-from choices.students import managment_students
+from choices.choice import managment_choice
 
 def main():
     # shell.system("cls")
@@ -29,13 +29,20 @@ def select_title_option(number):
             return "MATRICULAS"
         case _:
             return ""
-
+        
 def option(choice):
     title = select_title_option(choice)
     print(f"[{title}] - MENU DE OPERACAO\n")
     number = input_mode('operation')
-    return managment_students(number)
+    result = managment_choice(number)
+
+    if isinstance(result, list):  # Se o resultado for uma lista (caso de list_students)
+        for student in result:
+            print(f"Código: {student['code']}, Nome: {student['name']}, CPF: {student['document']}")
+    else:
+        print(result)
 
 while True:
     choice = main()
+    print('choice',choice)
     option(choice) 
