@@ -18,31 +18,37 @@ def input_mode(item):
 def select_title_option(number):
     match number:
         case 1:
-            return "ESTUDANTES"
+            return "ESTUDANTES", "students.json"
         case 2:
-            return "PROFESSORES"
+            return "PROFESSORES", "teachers.json"
         case 3:
-            return "DICIPLINAS"
+            return "DISCIPLINAS", "courses.json"
         case 4:
-            return "TURMAS"
+            return "TURMAS", "classes.json"
         case 5:
-            return "MATRICULAS"
+            return "MATRICULAS", "enrollments.json"
         case _:
-            return ""
-        
+            return "", ""
+
 def option(choice):
-    title = select_title_option(choice)
+    title, filename = select_title_option(choice)
+    if not title:
+        print("Opção inválida!")
+        return
+
     print(f"[{title}] - MENU DE OPERACAO\n")
     number = input_mode('operation')
-    result = managment_choice(number)
+    result = managment_choice(number, filename)
 
-    if isinstance(result, list):  # Se o resultado for uma lista (caso de list_students)
-        for student in result:
-            print(f"Código: {student['code']}, Nome: {student['name']}, CPF: {student['document']}")
+    if isinstance(result, list):
+        for item in result:
+            print(f"Código: {item['code']}\nNome: {item['name']}\nCPF: {item['document']}\n")
+            print("-" * 30)  # Linha de separação entre os registros
     else:
         print(result)
 
 while True:
     choice = main()
-    print('choice',choice)
-    option(choice) 
+    if choice == 9:
+        break
+    option(choice)

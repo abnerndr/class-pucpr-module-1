@@ -1,71 +1,60 @@
+import os
 from db.load import load_data
 from db.save import save_data
 from db.destroy import delete_data
 from db.update import update_data
 
-FILENAME = r'db/students.json'
+# Função para gerar o caminho completo para o arquivo JSON na pasta 'db'
+def get_file_path(filename):
+    return os.path.join("db", filename)
 
-def managment_choice(option):
+def managment_choice(option, filename):
+    filepath = get_file_path(filename)
     match option:
         case 1:
-            name = input("informe o nome do aluno: ")
-            document = input("informe o CPF do aluno: ")
-            return create(name, document)
+            name = input(f"informe o nome do {filename[:-5]}: ")
+            document = input(f"informe o CPF do {filename[:-5]}: ")
+            return create(name, document, filepath)
         case 2:
-            return list_students()
+            return list_items(filepath)
         case 3:
-            code = input("informe o código de registro do aluno: ")
-            name = input("informe o nome a ser alterado: ")
-            document = input("informe o CPF a ser alterado: ")
-            return update(code, name, document)
+            code = input(f"informe o código de registro do {filename[:-5]}: ")
+            name = input(f"informe o nome a ser alterado: ")
+            document = input(f"informe o CPF a ser alterado: ")
+            return update(code, name, document, filepath)
         case 4:
-            code = input("informe o código de registro do aluno: ")
-            return delete(code)
+            code = input(f"informe o código de registro do {filename[:-5]}: ")
+            return delete(code, filepath)
         case _:
             return "error"
 
-def create(name, document):
-    students = load_data(FILENAME)
+def create(name, document, filepath):
+    items = load_data(filepath)
 
-    last_code = max((student['code'] for student in students), default=0)
+    last_code = max((item['code'] for item in items), default=0)
     new_code = last_code + 1
     
-    new_student = {
+    new_item = {
         "code": new_code,
         "name": name,
         "document": document
     }
     
-    students.append(new_student)
-    save_data(students, FILENAME)
-    return new_student
+    items.append(new_item)
+    save_data(items, filepath)
+    return new_item
 
-def list_students():
-    students = load_data(FILENAME)
-    return students
+def list_items(filepath):
+    items = load_data(filepath)
+    return items
 
-def update(code, name, document):
+def update(code, name, document, filepath):
     code = int(code)
     data = {
         "name": name,
         "document": document
     }
-    return update_data(code, data, FILENAME)
-    
+    return update_data(code, data, filepath)
 
-def delete(code):
-    return delete_data(code, FILENAME)
-
-# Exemplos de uso
-if __name__ == "__main__":
-    # Criar um novo aluno
-    print(managment_students(1, "Alice", "123456789"))
-
-    # Listar todos os alunos
-    print(managment_students(2))
-
-    # Atualizar um aluno existente
-    print(managment_students(3, 1, "Alice Smith", "987654321"))
-
-    # Deletar um aluno
-    print(managment_students(4, 1))
+def delete(code, filepath):
+    return delete_data(code, filepath)

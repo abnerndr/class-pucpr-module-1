@@ -8,7 +8,7 @@ def update_data(code, data, FILENAME):
     for item in items:
         if item['code'] == code:
             item = data
-            save_data(FILENAME, items)
+            save_data(items, FILENAME)
             return items
     
     return "nenhum registro encontrato"
